@@ -13,9 +13,10 @@ thingsRouter.route('/').get((req, res, next) => {
 });
 
 thingsRouter.route('/:thing_id')
+.all(basic_auth.requireAuth)
 .all(checkThingExists)
 .get((req, res) => {
-  basic_auth.requireAuth(req,res)
+
 	res.json(ThingsService.serializeThing(res.thing));
 });
 
