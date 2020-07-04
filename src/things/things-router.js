@@ -1,6 +1,6 @@
 const express = require('express');
 const ThingsService = require('./things-service');
-const basic_auth = require('../middleware/basic-auth');
+const {requireAuth} = require('../middleware/basic-auth');
 
 const thingsRouter = express.Router();
 
@@ -13,10 +13,10 @@ thingsRouter.route('/').get((req, res, next) => {
 });
 
 thingsRouter.route('/:thing_id')
-.all(basic_auth.requireAuth)
+.all(requireAuth)
 .all(checkThingExists)
 .get((req, res) => {
-
+console.log(req.user);
 	res.json(ThingsService.serializeThing(res.thing));
 });
 
@@ -32,6 +32,7 @@ thingsRouter.route('/:thing_id/reviews/').all(checkThingExists).get((req, res, n
 async function checkThingExists(req, res, next) {
 	try {
 		const thing = await ThingsService.getById(req.app.get('db'), req.params.thing_id);
+		
 
 		if (!thing)
 			return res.status(404).json({

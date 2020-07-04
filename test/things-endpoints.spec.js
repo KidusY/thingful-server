@@ -11,6 +11,11 @@ describe('Things Endpoints', function() {
     testReviews,
   } = helpers.makeThingsFixtures()
 
+  function makeAuthHeader(user) {
+       const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
+       return `Basic ${token}`
+     }
+
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
